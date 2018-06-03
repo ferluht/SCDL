@@ -50,7 +50,7 @@ def extract_traces(traces_file, labeled_traces_file, test_size=0.1, target_point
     desync_traces = np.zeros([len(raw_traces), len(target_points)], desync_raw_traces.dtype)
     desync_metadata = np.zeros(len(raw_traces), np.uint32)
     curr_trace = 0
-    for trace in len(raw_traces):
+    for trace in range(len(raw_traces)):
         # Desynchronize the profiling traces with the asked amount
         r_desync = random.randint(0, desync)
         desync_metadata[curr_trace] = r_desync
