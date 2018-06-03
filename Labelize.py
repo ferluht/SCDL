@@ -65,7 +65,7 @@ def extract_traces(traces_file, labeled_traces_file, test_size=0.1, target_point
 
     #     print(desync_traces.shape, labels.shape, desync_metadata.shape, raw_keys.shape, raw_plaintexts.shape, desync_traces.shape, )
 
-    data_train, data_test, labels_train, labels_test = train_test_split(desync_traces, labels, test_size=test_size)
+    i_train, i_test = train_test_split(range(len(raw_traces)), test_size=test_size)
 
     # Open the output labeled file for writing
     try:
@@ -80,21 +80,21 @@ def extract_traces(traces_file, labeled_traces_file, test_size=0.1, target_point
     profiling_traces_group = out_file.create_group("Profiling_traces")
     attack_traces_group = out_file.create_group("Attack_traces")
     # Datasets in the groups
-    profiling_traces_group.create_dataset(name="traces", data=data_train, dtype=data_train.dtype)
-    attack_traces_group.create_dataset(name="traces", data=data_test, dtype=data_test.dtype)
+    profiling_traces_group.create_dataset(name="traces", data=raw_traces[i_train], dtype=raw_traces.dtype)
+    attack_traces_group.create_dataset(name="traces", data=raw_traces[i_test], dtype=raw_traces.dtype)
     # Labels in the groups
-    profiling_traces_group.create_dataset(name="labels", data=labels_train, dtype=labels_train.dtype)
-    attack_traces_group.create_dataset(name="labels", data=labels_test, dtype=labels_test.dtype)
+    profiling_traces_group.create_dataset(name="labels", data=labels[i_train], dtype=labels.dtype)
+    attack_traces_group.create_dataset(name="labels", data=labels[i_test], dtype=labels.dtype)
     # Put the metadata (plaintexts, keys, ...) so that one can check the key rank
-    #     metadata_type = np.dtype([
-    #             ("plaintext", raw_plaintexts.dtype, (16,)),
-    #             ("key", raw_keys.dtype, (16,)),
-    #             ("desync", np.uint32, (1,)),
-    #            ])
-    #     profiling_metadata = np.array([(texts_train[i], keys_train[i], metadata_train[i]) for i  in len(data_train)], dtype=metadata_type)
-    #     profiling_traces_group.create_dataset("metadata", data=profiling_metadata, dtype=metadata_type)
-    #     attack_metadata = np.array([(texts_test[i], keys_test[i], metadata_test[i]) for i in len(data_test)], dtype=metadata_type)
-    #     attack_traces_group.create_dataset("metadata", data=attack_metadata, dtype=metadata_type)
+    metadata_type = np.dtype([
+            ("plaintext", raw_plaintexts.dtype, (16,)),
+            ("key", raw_keys.dtype, (16,)),
+            ("desync", np.uint32, (1,)),
+           ])
+    profiling_metadata = np.array([(raw_plaintexts[i], raw_keys[i], desync_metadata[i]) for i in i_train], dtype=metadata_type)
+    profiling_traces_group.create_dataset("metadata", data=profiling_metadata, dtype=metadata_type)
+    attack_metadata = np.array([(raw_plaintexts[i], raw_keys[i], desync_metadata[i]) for i in i_test], dtype=metadata_type)
+    attack_traces_group.create_dataset("metadata", data=attack_metadata, dtype=metadata_type)
 
     out_file.flush()
     out_file.close()
