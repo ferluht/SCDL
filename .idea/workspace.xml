@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5b79a321-eed4-4e7a-ba0d-a2fc7ea75f2c" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/Labelize.py" beforeDir="false" afterPath="$PROJECT_DIR$/Labelize.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Check.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -46,11 +46,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Labelize.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Labelize.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Labelize.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="144">
               <caret line="113" column="18" selection-start-line="113" selection-start-column="18" selection-end-line="113" selection-end-column="18" />
+              <folding>
+                <element signature="e#0#14#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Check.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Check.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2244">
+              <caret line="137" column="16" selection-start-line="137" selection-start-column="16" selection-end-line="137" selection-end-column="16" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -77,6 +89,7 @@
         <option value="$PROJECT_DIR$/reuirements.txt" />
         <option value="$PROJECT_DIR$/Plotly.py" />
         <option value="$PROJECT_DIR$/Labelize.py" />
+        <option value="$PROJECT_DIR$/Check.py" />
       </list>
     </option>
   </component>
@@ -233,6 +246,16 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="144">
           <caret line="113" column="18" selection-start-line="113" selection-start-column="18" selection-end-line="113" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Check.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2244">
+          <caret line="137" column="16" selection-start-line="137" selection-start-column="16" selection-end-line="137" selection-end-column="16" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
