@@ -21,13 +21,13 @@ def labelize(plaintexts, keys):
     return keys[:, 0] ^ plaintexts[:, 0]
 
 
-# TODO: sanity checks on the parameters
-def extract_traces(traces_file, labeled_traces_file, test_size=0.1, target_points=[n for n in range(3000, 4000)], desync=0):
+def extract_traces(traces_file, labeled_traces_file, test_size=0.1, target_points=[n for n in range(3000, 4000)],
+                   desync=0):
     check_file_exists(traces_file)
     check_file_exists(os.path.dirname(labeled_traces_file))
     # Open the raw traces HDF5 for reading
     try:
-        in_file  = h5py.File(traces_file, "r")
+        in_file = h5py.File(traces_file, "r")
     except:
         print("Error: can't open HDF5 file '%s' for reading (it might be malformed) ..." % traces_file)
         sys.exit(-1)
@@ -56,17 +56,16 @@ def extract_traces(traces_file, labeled_traces_file, test_size=0.1, target_point
         desync_metadata[curr_trace] = r_desync
         curr_point = 0
         for point in map(int.__sub__, target_points, [min_target_point] * len(target_points)):
-          desync_traces[curr_trace, curr_point] = desync_raw_traces[trace, point+r_desync]
-          curr_point += 1
+            desync_traces[curr_trace, curr_point] = desync_raw_traces[trace, point + r_desync]
+            curr_point += 1
         curr_trace += 1
 
     # Compute our labels
     labels = labelize(raw_plaintexts, raw_keys)
 
-    data_train, data_test, labels_train, labels_test, metadata_train, metadata_test, \
-    keys_train, keys_test, texts_train, texts_test, ciphertexts_train, ciphertexts_test = \
-        train_test_split(desync_traces, labels, desync_metadata, raw_keys, raw_plaintexts, raw_ciphertexts,
-                         test_size=test_size)
+    #     print(desync_traces.shape, labels.shape, desync_metadata.shape, raw_keys.shape, raw_plaintexts.shape, desync_traces.shape, )
+
+    data_train, data_test, labels_train, labels_test = train_test_split(desync_traces, labels, test_size=test_size)
 
     # Open the output labeled file for writing
     try:
@@ -87,15 +86,15 @@ def extract_traces(traces_file, labeled_traces_file, test_size=0.1, target_point
     profiling_traces_group.create_dataset(name="labels", data=labels_train, dtype=labels_train.dtype)
     attack_traces_group.create_dataset(name="labels", data=labels_test, dtype=labels_test.dtype)
     # Put the metadata (plaintexts, keys, ...) so that one can check the key rank
-    metadata_type = np.dtype([
-            ("plaintext", raw_plaintexts.dtype, (16,)),
-            ("key", raw_keys.dtype, (16,)),
-            ("desync", np.uint32, (1,)),
-           ])
-    profiling_metadata = np.array([(texts_train[i], keys_train[i], metadata_train[i]) for i  in len(data_train)], dtype=metadata_type)
-    profiling_traces_group.create_dataset("metadata", data=profiling_metadata, dtype=metadata_type)
-    attack_metadata = np.array([(texts_test[i], keys_test[i], metadata_test[i]) for i in len(data_test)], dtype=metadata_type)
-    attack_traces_group.create_dataset("metadata", data=attack_metadata, dtype=metadata_type)
+    #     metadata_type = np.dtype([
+    #             ("plaintext", raw_plaintexts.dtype, (16,)),
+    #             ("key", raw_keys.dtype, (16,)),
+    #             ("desync", np.uint32, (1,)),
+    #            ])
+    #     profiling_metadata = np.array([(texts_train[i], keys_train[i], metadata_train[i]) for i  in len(data_train)], dtype=metadata_type)
+    #     profiling_traces_group.create_dataset("metadata", data=profiling_metadata, dtype=metadata_type)
+    #     attack_metadata = np.array([(texts_test[i], keys_test[i], metadata_test[i]) for i in len(data_test)], dtype=metadata_type)
+    #     attack_traces_group.create_dataset("metadata", data=attack_metadata, dtype=metadata_type)
 
     out_file.flush()
     out_file.close()
