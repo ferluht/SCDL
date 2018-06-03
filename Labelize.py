@@ -3,7 +3,7 @@ import sys
 import h5py
 import numpy as np
 import random
-
+from sklearn.model_selection import train_test_split
 
 def check_file_exists(file_path):
     if os.path.exists(file_path) == False:
@@ -22,7 +22,7 @@ def labelize(plaintexts, keys):
 
 
 # TODO: sanity checks on the parameters
-def extract_traces(traces_file, labeled_traces_file, profiling_index = [n for n in range(0, 2560)], attack_index = [n for n in range(0, 2560, 10)], target_points=[n for n in range(3000, 4000)], profiling_desync=0, attack_desync=0):
+def extract_traces(traces_file, labeled_traces_file, test_size=0.1, target_points=[n for n in range(3000, 4000)], desync=0):
     check_file_exists(traces_file)
     check_file_exists(os.path.dirname(labeled_traces_file))
     # Open the raw traces HDF5 for reading
@@ -40,42 +40,34 @@ def extract_traces(traces_file, labeled_traces_file, profiling_index = [n for n 
     # Extract a larger set of points to handle desynchronization
     min_target_point = min(target_points)
     max_target_point = max(target_points)
-    desync_raw_traces = raw_traces[:, range(min_target_point, max_target_point + 1 + max(profiling_desync, attack_desync))]
+    desync_raw_traces = raw_traces[:, range(min_target_point, max_target_point + 1 + desync)]
 
     # Apply a desynchronization on the traces if asked to
     # See White Paper
     # In order to desynchronize our traces, we only shift the
     # target_points by the given amount
     # Select the profiling and attack traces and zoom in on the points of interest
-    raw_traces_profiling = np.zeros([len(profiling_index), len(target_points)], desync_raw_traces.dtype)
-    profiling_desync_metadata = np.zeros(len(profiling_index), np.uint32)
+    desync_traces = np.zeros([len(raw_traces), len(target_points)], desync_raw_traces.dtype)
+    desync_metadata = np.zeros(len(raw_traces), np.uint32)
     curr_trace = 0
-    for trace in profiling_index:
+    for trace in raw_traces:
         # Desynchronize the profiling traces with the asked amount
-        r_desync = random.randint(0, profiling_desync)
-        profiling_desync_metadata[curr_trace] = r_desync
+        r_desync = random.randint(0, desync)
+        desync_metadata[curr_trace] = r_desync
         curr_point = 0
         for point in map(int.__sub__, target_points, [min_target_point] * len(target_points)):
-          raw_traces_profiling[curr_trace, curr_point] = desync_raw_traces[trace, point+r_desync]
-          curr_point += 1
-        curr_trace += 1
-
-    raw_traces_attack = np.zeros([len(attack_index), len(target_points)], desync_raw_traces.dtype)
-    attack_desync_metadata = np.zeros(len(attack_index), np.uint32)
-    curr_trace = 0
-    for trace in attack_index:
-        # Desynchronize the profiling traces with the asked amount
-        r_desync = random.randint(0, attack_desync)
-        attack_desync_metadata[curr_trace] = r_desync
-        curr_point = 0
-        for point in map(int.__sub__, target_points, [min_target_point] * len(target_points)):
-          raw_traces_attack[curr_trace, curr_point] = desync_raw_traces[trace, point+r_desync]
+          desync_traces[curr_trace, curr_point] = desync_raw_traces[trace, point+r_desync]
           curr_point += 1
         curr_trace += 1
 
     # Compute our labels
-    labels_profiling = labelize(raw_plaintexts[profiling_index], raw_keys[profiling_index])
-    labels_attack  = labelize(raw_plaintexts[attack_index], raw_keys[attack_index])
+    labels = labelize(raw_plaintexts, raw_keys)
+
+    data_train, data_test, labels_train, labels_test, metadata_train, metadata_test, \
+    keys_train, keys_test, texts_train, texts_test, ciphertexts_train, ciphertexts_test = \
+        train_test_split(desync_traces, labels, desync_metadata, raw_keys, raw_plaintexts, raw_ciphertexts,
+                         test_size=test_size)
+
     # Open the output labeled file for writing
     try:
         out_file = h5py.File(labeled_traces_file, "w")
@@ -89,20 +81,20 @@ def extract_traces(traces_file, labeled_traces_file, profiling_index = [n for n 
     profiling_traces_group = out_file.create_group("Profiling_traces")
     attack_traces_group = out_file.create_group("Attack_traces")
     # Datasets in the groups
-    profiling_traces_group.create_dataset(name="traces", data=raw_traces_profiling, dtype=raw_traces_profiling.dtype)
-    attack_traces_group.create_dataset(name="traces", data=raw_traces_attack, dtype=raw_traces_attack.dtype)
+    profiling_traces_group.create_dataset(name="traces", data=data_train, dtype=data_train.dtype)
+    attack_traces_group.create_dataset(name="traces", data=data_test, dtype=data_test.dtype)
     # Labels in the groups
-    profiling_traces_group.create_dataset(name="labels", data=labels_profiling, dtype=labels_profiling.dtype)
-    attack_traces_group.create_dataset(name="labels", data=labels_attack, dtype=labels_attack.dtype)
+    profiling_traces_group.create_dataset(name="labels", data=labels_train, dtype=labels_train.dtype)
+    attack_traces_group.create_dataset(name="labels", data=labels_test, dtype=labels_test.dtype)
     # Put the metadata (plaintexts, keys, ...) so that one can check the key rank
     metadata_type = np.dtype([
             ("plaintext", raw_plaintexts.dtype, (16,)),
             ("key", raw_keys.dtype, (16,)),
             ("desync", np.uint32, (1,)),
            ])
-    profiling_metadata = np.array([(raw_plaintexts[n], raw_keys[n], profiling_desync_metadata[k]) for n, k  in zip(profiling_index, range(0, len(profiling_desync_metadata)))], dtype=metadata_type)
+    profiling_metadata = np.array([(texts_train[i], keys_train[i], metadata_train[i]) for i  in len(data_train)], dtype=metadata_type)
     profiling_traces_group.create_dataset("metadata", data=profiling_metadata, dtype=metadata_type)
-    attack_metadata = np.array([(raw_plaintexts[n], raw_keys[n], attack_desync_metadata[k]) for n, k in zip(attack_index, range(0, len(attack_desync_metadata)))], dtype=metadata_type)
+    attack_metadata = np.array([(texts_test[i], keys_test[i], metadata_test[i]) for i in len(data_test)], dtype=metadata_type)
     attack_traces_group.create_dataset("metadata", data=attack_metadata, dtype=metadata_type)
 
     out_file.flush()
