@@ -134,6 +134,6 @@ def check_model(model_file, ascad_database, num_traces=2000):
 	plt.ylabel('rank')
 	plt.grid(True)
 	plt.plot(x, y)
+	plt.savefig(model_file[:-3] + '_check.png')
 	plt.show(block=False)
-	plt.savefig(model_file[:-3]+'_check.png')
 	plt.figure()
