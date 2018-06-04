@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5b79a321-eed4-4e7a-ba0d-a2fc7ea75f2c" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/Labelize.py" beforeDir="false" afterPath="$PROJECT_DIR$/Labelize.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Check.py" beforeDir="false" afterPath="$PROJECT_DIR$/Check.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -43,11 +44,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Labelize.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Labelize.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Labelize.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="865">
-              <caret line="103" column="4" selection-start-line="103" selection-start-column="4" selection-end-line="103" selection-end-column="4" />
+              <caret line="103" selection-start-line="103" selection-end-line="103" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -55,11 +56,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Check.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Check.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Check.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1955">
-              <caret line="115" column="9" lean-forward="true" selection-start-line="115" selection-start-column="9" selection-end-line="115" selection-end-column="9" />
+            <state relative-caret-position="746">
+              <caret line="137" column="34" selection-start-line="137" selection-start-column="34" selection-end-line="137" selection-end-column="34" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -85,8 +86,8 @@
         <option value="$PROJECT_DIR$/GoogleDrive.py" />
         <option value="$PROJECT_DIR$/reuirements.txt" />
         <option value="$PROJECT_DIR$/Plotly.py" />
-        <option value="$PROJECT_DIR$/Check.py" />
         <option value="$PROJECT_DIR$/Labelize.py" />
+        <option value="$PROJECT_DIR$/Check.py" />
       </list>
     </option>
   </component>
@@ -280,20 +281,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Check.py">
+    <entry file="file://$PROJECT_DIR$/Labelize.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1955">
-          <caret line="115" column="9" lean-forward="true" selection-start-line="115" selection-start-column="9" selection-end-line="115" selection-end-column="9" />
+        <state relative-caret-position="865">
+          <caret line="103" selection-start-line="103" selection-end-line="103" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Labelize.py">
+    <entry file="file://$PROJECT_DIR$/Check.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="865">
-          <caret line="103" column="4" selection-start-line="103" selection-start-column="4" selection-end-line="103" selection-end-column="4" />
+        <state relative-caret-position="746">
+          <caret line="137" column="34" selection-start-line="137" selection-start-column="34" selection-end-line="137" selection-end-column="34" />
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>

@@ -101,7 +101,7 @@ def extract_traces(traces_file, labeled_traces_file, test_size=0.1, target_point
 
     out_file.flush()
     out_file.close()
-    
+
 #### ASCAD helper to load profiling and attack data (traces and labels)
 # Loads the profiling and attack datasets from the ASCAD
 # database
