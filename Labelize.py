@@ -65,7 +65,10 @@ def extract_traces(traces_file, labeled_traces_file, test_size=0.1, target_point
 
     #     print(desync_traces.shape, labels.shape, desync_metadata.shape, raw_keys.shape, raw_plaintexts.shape, desync_traces.shape, )
 
-    i_train, i_test = train_test_split(range(len(raw_traces)), test_size=test_size)
+    i_train, i_test = train_test_split(range(len(desync_traces)), test_size=test_size)
+
+    i_train = sorted(i_train)
+    i_test = sorted(i_test)
 
     # Open the output labeled file for writing
     try:
@@ -80,8 +83,8 @@ def extract_traces(traces_file, labeled_traces_file, test_size=0.1, target_point
     profiling_traces_group = out_file.create_group("Profiling_traces")
     attack_traces_group = out_file.create_group("Attack_traces")
     # Datasets in the groups
-    profiling_traces_group.create_dataset(name="traces", data=raw_traces[i_train], dtype=raw_traces.dtype)
-    attack_traces_group.create_dataset(name="traces", data=raw_traces[i_test], dtype=raw_traces.dtype)
+    profiling_traces_group.create_dataset(name="traces", data=desync_traces[i_train], dtype=desync_traces.dtype)
+    attack_traces_group.create_dataset(name="traces", data=desync_traces[i_test], dtype=desync_traces.dtype)
     # Labels in the groups
     profiling_traces_group.create_dataset(name="labels", data=labels[i_train], dtype=labels.dtype)
     attack_traces_group.create_dataset(name="labels", data=labels[i_test], dtype=labels.dtype)
@@ -98,7 +101,7 @@ def extract_traces(traces_file, labeled_traces_file, test_size=0.1, target_point
 
     out_file.flush()
     out_file.close()
-
+    
 #### ASCAD helper to load profiling and attack data (traces and labels)
 # Loads the profiling and attack datasets from the ASCAD
 # database
